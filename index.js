@@ -116,8 +116,8 @@ function showBranchDetail(branch) {
     <div class="branch-details-div">
       <a class="branch-title">${branch.name}</a>
       <a class="opening-hours">${branch.hours}</a>
-      <a class="address"><i class="fa fa-directions"></i> ${branch.address}</a>
-      <a class="phone"><i class="fa fa-phone-alt"></i> ${branch.number}</a>
+      <a href="${branch.directions}" class="address"><i class="fa fa-directions"></i> ${branch.address}</a>
+      <a href="tel:${branch.number}" class="phone"><i class="fa fa-phone-alt"></i> ${branch.number}</a>
     </div>`);
   }
 }
