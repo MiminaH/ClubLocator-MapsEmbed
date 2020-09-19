@@ -2,12 +2,11 @@
     - Get Started with Maps Embed: https://developers.google.com/maps/documentation/embed/get-started
     - Create Map Style: https://mapstyle.withgoogle.com/ 
     - More on Zoom Levels: https://www.maps.ie/create-google-map/
+    - On URL Parameters: https://stackoverflow.com/questions/13023196/what-is-meaning-of-parameter-in-url-google-maps/13024182
+    - On URL Parameters: https://stackoverflow.com/questions/11354211/google-maps-query-parameter-clarification
 */
 
-$(window).click(function (event) {
-});
-
-
+$(window).click(function (event) {});
 
 /* ****************** Goggle Maps API ****************** */
 var currentLocation;
@@ -20,7 +19,6 @@ function getCurrentLocation() {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       };
-      console.log(currentLocation);
 
       document.getElementById('map-iframe').src = mapUrl.concat(
         '&z=14&ll=',
@@ -30,14 +28,10 @@ function getCurrentLocation() {
       );
 
       console.log(document.getElementById('map-iframe').src);
-
-      // infoWindow.setPosition(pos);
-      // infoWindow.setContent('Location found.');
-      // infoWindow.open(map);
-      // map.setCenter(pos);
     });
   } else {
     // Browser doesn't support Geolocation
+    alert("Couldn't get your location!");
     // handleLocationError(false, infoWindow, map.getCenter());
   }
 }
@@ -55,17 +49,19 @@ function locateNearestBranch() {
   if (currentLocation == null) {
     // get current location, if we don't have it.
     getCurrentLocation();
-    return;
+    // return;
   }
 
   // set distances between current lcoation & branches.
   setBranchesDistance(currentLocation, branches);
+  sortArrayByDistance(branches);
 
   let nearestBranch = getNearestBranch(branches);
 
   clearBranchesDetailsDiv();
   showBranchDetail(nearestBranch);
 }
+
 
 // Get Nearest Branch -------------------------------------------------------------
 function getNearestBranch(branches) {
@@ -109,9 +105,11 @@ function showBranchDetail(branch) {
     <div class="branch-details-div">
       <a class="branch-title">${branch.name}</a>
       <a class="opening-hours">${branch.hours}</a>
-      <a class="distance">${Math.round(branch.distance * 10) / 10} km away from you</a>
-      <a class="address"><i class="fa fa-directions"></i> ${branch.address}</a>
-      <a class="phone"><i class="fa fa-phone-alt"></i> ${branch.number}</a>
+      <a class="distance">${
+        Math.round(branch.distance * 10) / 10
+      } km away from you</a>
+      <a href="${branch.directions}" class="address"><i class="fa fa-directions"></i> ${branch.address}</a>
+      <a href="tel:${branch.number}" class="phone"><i class="fa fa-phone-alt"></i> ${branch.number}</a>
     </div>`);
   } else {
     $('.branches-details-div').append(`
@@ -153,3 +151,16 @@ function setBranchesDistance(currentLoc, branchesJSON) {
     branch.distance = haversine_distance(currentLoc, branch.coordinates);
   }
 }
+
+function sortArrayByDistance(branches) {
+  branches.sort(function (a, b) {
+    return a.distance - b.distance;
+  });
+}
+
+// function changeMapTest() {
+//   document.getElementById('map-iframe').src =
+//     'https://www.google.com/maps/d/embed?mid=1K5f59Ixf7U9psWUW18XHfRi6PNkNWdbx&ll=30.131524333803632%2C31.61540780000001&z=18';
+
+//   console.log(document.getElementById('map-iframe').src);
+// }
